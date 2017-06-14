@@ -1,105 +1,28 @@
 <!DOCTYPE html>
 <html>
-<script src="./js/angular.min.js"></script>
-<script src="./js/html2canvas.min.js"></script>
     <link rel="stylesheet" href="./css/jquery.orgchart.css">
     <link rel="stylesheet" href="./css/style.css">
 	<link rel="stylesheet" href="./css/font-awesome.min.css">
     <link rel="stylesheet" href="style.css">
 <body>
 
-<div ng-app="myApp">
-	<org-chart data="data"></org-chart>
-	
-	<button ng-click="callMe(org.datascource)">Save</button>
+<div ng-app="hlOrgChart">
+    <div ng-controller="mainCtrl">
+        <org-chart org-options="orgOptions" on-change="dropped(hierarchy)"></org-chart>
+
+        <button ng-click="callMe(org.datascource)">Save</button>
+    </div>
 </div>
 
-<script>
-var app = angular.module('myApp', []);
+<script src="./js/lib/angular.min.js"></script>
+<script src="./js/lib/html2canvas.min.js"></script> <!-- vendor lib for export org chart to canvas -->
+<script type="text/javascript" src="./js/lib/jquery-3.1.0.min.js"></script>
+<script type="text/javascript" src="./js/lib/jquery.orgchart.js"></script>
 
-	
+<!-- App files -->
+<script src="./js/app.js"></script>
+<script src="./js/hl-org-chart.js"></script>
+<script src="./js/mainCtrl.js"></script>
 
-app.directive('orgChart', function() {
-    return {
-        restrict: 'E',
-		link: function (scope, element, attrs, ngModelCtrl) {
-           $(element).orgchart(scope.initOrg)
-			.children('.orgchart').on('nodedropped.orgchart', function(event) {
-			
-			console.log('draggedNode:' + event.draggedNode.children('.title').text(), event.draggedNode.attr('id')
-        + ', dragZone:' + event.dragZone.children('.title').text(), event.dragZone.attr('id')
-        + ', dropZone:' + event.dropZone.children('.title').text(), event.dropZone.attr('id'));
-		
-		
-		
-				var tree = $(element).orgchart('getHierarchy');
-				ngModelCtrl.$modelValue = tree;
-				scope.ngModel = tree;
-				scope.update(tree);
-			}).on('click', '.node', function() {
-			  var $this = $(this);
-			  console.log("$this.find('.title').text()", $this.find('.title').text());
-			  $('#selected-node').val($this.find('.title').text()).data('node', $this);
-			});
-        },
-		controller : function($scope) {
-			$scope.update = function(data){
-				console.log(data);
-			}
-			
-			
-			
-			var datascource = {
-	   id: 1,
-      'name': 'Lao Lao',
-      'title': 'general manager',
-      'children': [
-        { 'name': 'Bo Miao', 'title': 'department manager', id: 1.1,
-          'children': [{ 'name': 'Li Xin', 'title': 'senior engineer', id:1.11 }]
-        },
-        { 'name': 'Su Miao', 'title': 'department manager', id: 1.21,
-          'children': [
-            { 'name': 'Tie Hua', 'title': 'senior engineer', id: 2.21 },
-            { 'name': 'Hei Hei', 'title': 'senior engineer', id: 2.22,
-              'children': [
-                { 'name': 'Pang Pang', 'title': 'engineer', id: 3.11 },
-                { 'name': 'Xiang Xiang', 'title': 'UE engineer' , id: 3.21}
-              ]
-            }
-          ]
-        },
-        { 'name': 'Hong Miao', 'title': 'department manager', id: 1.22 },
-        { 'name': 'Chun Miao', 'title': 'department manager', id: 1.23 }
-      ]
-    };
-	
-	
-	
-	function initChart() {
-		$scope.initOrg = {
-		  'data' : datascource,
-		  'nodeContent': 'title',
-		  'draggable': true,
-		  'exportButton': true,
-			'exportFilename': 'MyOrgChart',
-		  'dropCriteria': function($draggedNode, $dragZone, $dropZone) {
-			if($draggedNode.find('.content').text().indexOf('manager') > -1 && $dropZone.find('.content').text().indexOf('engineer') > -1) {
-			  return false;
-			}
-			return true;
-		  }
-		};
-	
-	}
-	
-	initChart();
-		}
-    };
-});
-</script>
-
-  <script type="text/javascript" src="./js/jquery-3.1.0.min.js"></script>
-  <script type="text/javascript" src="./js/jquery.orgchart.js"></script>
-  
 </body>
 </html>
