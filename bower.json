@@ -4,6 +4,7 @@
   "dependencies": {
     "angular": "^1.6.4",
     "html2canvas": "^0.4.1",
-    "orgchart": "^1.3.7"
+    "orgchart": "^1.3.7",
+    "bootstrap": "^3.3.7"
   }
 }
