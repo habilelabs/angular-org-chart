@@ -29,6 +29,8 @@ app.controller('mainCtrl', function($scope) {
         'draggable': true,
         'exportButton': true,
         'exportFilename': 'MyOrgChart',
+        'pan': true,
+        'zoom': true,
         'dropCriteria': function ($draggedNode, $dragZone, $dropZone) {
             if ($draggedNode.find('.content').text().indexOf('manager') > -1 && $dropZone.find('.content').text().indexOf('engineer') > -1) {
                 return false;
