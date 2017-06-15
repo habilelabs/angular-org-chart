@@ -80,7 +80,7 @@ body {
 }
 
 .orgchart .node .title .symbol {
-  margin-top: 1px; 
+  margin-top: 1px;
 }
 
 #edit-panel {
@@ -185,9 +185,6 @@ body {
   margin-left: 20px;
 }
 
-
-/* Info model on popover */
-
 .orgchart .second-menu-icon {
     transition: opacity .5s;
     opacity: 0;
@@ -221,6 +218,7 @@ body {
     float: left;
     margin: 5px;
 }
-.pointer {
-    cursor: pointer !important;
+
+#edit-panel input {
+    color: #000;
 }
