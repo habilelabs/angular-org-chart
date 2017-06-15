@@ -15,15 +15,11 @@ app.directive('orgChart', function () {
 
 
                     var tree = $(element).orgchart('getHierarchy');
-                    /*ngModelCtrl.$modelValue = tree;
-                    scope.ngModel = tree;*/
-                    console.log(tree);
                     scope.onChange({hierarchy : tree});
-                }).on('click', '.node', function () {
-                    var $this = $(this);
-                    console.log("$this.find('.title').text()", $this.find('.title').text());
-                    $('#selected-node').val($this.find('.title').text()).data('node', $this);
                 });
+        },
+        controller : function() {
+
         }
     };
 });

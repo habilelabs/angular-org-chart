@@ -1,0 +1,9 @@
+{
+  "name": "Angular Org Chart",
+  "version": "0.0.1",
+  "dependencies": {
+    "angular": "^1.6.4",
+    "html2canvas": "^0.4.1",
+    "orgchart": "^1.3.7"
+  }
+}
