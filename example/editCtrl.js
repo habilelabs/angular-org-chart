@@ -1,11 +1,15 @@
 app.controller('editCtrl', function($scope) {
-
+    $scope.nodes = ["Parent(root)","Child","Sibling"];
+    $scope.nodeType = '';
     var datascource = {
         'name': 'Ball game',
         'children': [
             { 'name': 'Football' },
             { 'name': 'Basketball' },
-            { 'name': 'Volleyball' }
+            { 'name': 'Volleyball' ,'children': [
+                { 'name': 'Tie Hua'},
+                { 'name': 'Hei Hei'}
+            ]}
         ]
     };
 
@@ -19,21 +23,12 @@ app.controller('editCtrl', function($scope) {
         'exportFilename': 'SportsChart',
         'parentNodeSymbol': 'fa-th-large',
         'createNode': function($node, data) {
-            $node[0].id = getId();
-
-            var secondMenuIcon = $('<i>', {
-                'class': 'fa fa-info-circle second-menu-icon',
-                click: function() {
-                    $scope.$apply(function() {
-                        $scope.node = data;
-                        $scope.node.newNodeList = [{'name' : ''}];
-                    });
-
-                    $(this).siblings('.second-menu').toggle();
+            $node.on('click', function (event) {
+                if (!$(event.target).is('.edge')) {
+                    $scope.node= {name:data.name};
+                    $scope.node.newNodeList = [{'name' : ''}];
                 }
             });
-            var secondMenu = '<div class="second-menu"></div>';
-            $node.append(secondMenuIcon).append(secondMenu);
         }
     })
         .on('click', '.node', function() {
@@ -51,62 +46,46 @@ app.controller('editCtrl', function($scope) {
         if(type == 'view'){
             $('#btn-reset').trigger('click');
         }
-    }
-
-    $('input[name="node-type"]').on('click', function() {
-        var $this = $(this);
-        if ($this.val() === 'parent') {
-            $('#edit-panel').addClass('edit-parent-node');
-            $('#new-nodelist').children(':gt(0)').remove();
-        } else {
-            $('#edit-panel').removeClass('edit-parent-node');
+    };
+    $scope.selectNodeType = function (nodeType) {
+        $scope.nodeType = nodeType;
+        if(nodeType == 'Parent(root)'){
+            $scope.parent = true;
         }
-    });
+    };
 
     $scope.addNewItem = function(){
         $scope.node.newNodeList.push({'name' : ''});
-    }
+    };
 
     $scope.removeItem = function(){
         if($scope.node.newNodeList.length > 1) {
-            console.log($scope.node.newNodeList);
             $scope.node.newNodeList.splice(-1,1);
         }
-    }
-
-    $('#btn-add-nodes').on('click', function() {
+    };
+    $scope.addNode  = function () {
         var $chartContainer = $('#chart-container');
-        var nodeVals = [];
-        $('#new-nodelist').find('.new-node').each(function(index, item) {
-            var validVal = item.value.trim();
-            if (validVal.length) {
-                nodeVals.push(validVal);
-            }
-        });
         var $node = $('#selected-node').data('node');
-        console.log($node);
-        if (!nodeVals.length) {
+        if (!$scope.node.newNodeList.length) {
             alert('Please input value for new node');
             return;
         }
-        var nodeType = $('input[name="node-type"]:checked');
-        if (!nodeType.length) {
+        if (!$scope.nodeType.length) {
             alert('Please select a node type');
             return;
         }
-        if (nodeType.val() !== 'parent' && !$('.orgchart').length) {
+        if ($scope.nodeType !== 'Parent(root)' && !$('.orgchart').length) {
             alert('Please creat the root node firstly when you want to build up the orgchart from the scratch');
             return;
         }
-        console.log("nodeType.val()", nodeType.val());
-        if (nodeType.val() !== 'parent' && !$node) {
+        if ($scope.nodeType !== 'Parent(root)' && !$node) {
             alert('Please select one node in orgchart');
             return;
         }
-        if (nodeType.val() === 'parent') {
+        if ($scope.nodeType === 'Parent(root)') {
             if (!$chartContainer.children().length) {// if the original chart has been deleted
                 $chartContainer.orgchart({
-                    'data' : { 'name': nodeVals[0] },
+                    'data' : { 'name': $scope.node.newNodeList[0].name.name},
                     'exportButton': true,
                     'exportFilename': 'SportsChart',
                     'parentNodeSymbol': 'fa-th-large',
@@ -116,30 +95,29 @@ app.controller('editCtrl', function($scope) {
                 })
                     .find('.orgchart').addClass('view-state');
             } else {
-                $chartContainer.orgchart('addParent', $chartContainer.find('.node:first'), { 'name': nodeVals[0], 'Id': getId() });
+                $chartContainer.orgchart('addParent', $chartContainer.find('.node:first'), { 'name': $scope.node.newNodeList[0].name, 'Id': getId() });
             }
-        } else if (nodeType.val() === 'siblings') {
+        } else if ($scope.nodeType === 'siblings') {
             $chartContainer.orgchart('addSiblings', $node,
-                { 'siblings': nodeVals.map(function(item) { return { 'name': item, 'relationship': '110', 'Id': getId() }; })
+                { 'siblings': $scope.node.newNodeList.map(function(item) { return { 'name': item.name, 'relationship': '110', 'Id': getId() }; })
                 });
         } else {
             var hasChild = $node.parent().attr('colspan') > 0 ? true : false;
             if (!hasChild) {
-                var rel = nodeVals.length > 1 ? '110' : '100';
+                var rel = $scope.node.newNodeList.length > 1 ? '110' : '100';
                 $chartContainer.orgchart('addChildren', $node, {
-                    'children': nodeVals.map(function(item) {
-                        return { 'name': item, 'relationship': rel, 'Id': getId() };
+                    'children': $scope.node.newNodeList.map(function(item) {
+                        return { 'name': item.name, 'relationship': rel, 'Id': getId() };
                     })
                 }, $.extend({}, $chartContainer.find('.orgchart').data('options'), { depth: 0 }));
             } else {
                 $chartContainer.orgchart('addSiblings', $node.closest('tr').siblings('.nodes').find('.node:first'),
-                    { 'siblings': nodeVals.map(function(item) { return { 'name': item, 'relationship': '110', 'Id': getId() }; })
+                    { 'siblings': $scope.node.newNodeList.map(function(item) { return { 'name': item.name, 'relationship': '110', 'Id': getId() }; })
                     });
             }
         }
-    });
-
-    $('#btn-delete-nodes').on('click', function() {
+    };
+    $scope.deleteNode  = function(){
         var $node = $('#selected-node').data('node');
         if (!$node) {
             alert('Please select one node in orgchart');
@@ -151,13 +129,15 @@ app.controller('editCtrl', function($scope) {
         }
         $('#chart-container').orgchart('removeNodes', $node);
         $('#selected-node').val('').data('node', null);
-    });
-
-    $('#btn-reset').on('click', function() {
+    };
+    $scope.reset  = function () {
         $('.orgchart').find('.focused').removeClass('focused');
-        $('#selected-node').val('');
-        $('#new-nodelist').find('input:first').val('').parent().siblings().remove();
+        $scope.node.newNodeList = [{name : ''}];
+        $scope.node.name = "";
+        $scope.nodeTypeName = false;
+        //$('#selected-node').val('');
+        //$('#new-nodelist').find('input:first').val('').parent().siblings().remove();
         $('#node-type-panel').find('input').prop('checked', false);
-    });
+    };
 
 });

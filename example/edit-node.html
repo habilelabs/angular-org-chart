@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
-    <link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
-    <link rel="stylesheet" href="../bower_components/orgchart/dist/css/jquery.orgchart.css" />
-	<link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css" />
-    <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../bower_components/bootstrap/dist/css/bootstrap.min.css" />
+<link rel="stylesheet" href="../bower_components/orgchart/dist/css/jquery.orgchart.css" />
+<link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css" />
+<link rel="stylesheet" href="style.css">
 <body>
 
 <div ng-app="hlOrgChart">
@@ -11,8 +11,8 @@
         <div id="chart-container"></div>
         <div id="edit-panel">
 
-            <label class="selected-node-group">selected node:</label>
-            <input type="text" ng-model="node.name" id="selected-node" class="selected-node-group">
+            <label class="selected-node-group" ng-if="!parent">selected node:</label>
+            <input type="text" ng-model="node.name" id="selected-node" class="selected-node-group" ng-if="!parent">
             <label>new node:</label>
             <ul id="new-nodelist">
                 <!--<li><input type="text" class="new-node"></li>-->
@@ -21,14 +21,12 @@
             </ul>
             <i class="fa fa-plus-circle btn-inputs" ng-click="addNewItem()" id="btn-add-input"></i>
             <i class="fa fa-minus-circle btn-inputs" ng-click="removeItem()" id="btn-remove-input"></i>
-    <span id="node-type-panel" class="radio-panel">
-      <input type="radio" name="node-type" id="rd-parent" value="parent"><label for="rd-parent">Parent(root)</label>
-      <input type="radio" name="node-type" id="rd-child" value="children"><label for="rd-child">Child</label>
-      <input type="radio" name="node-type" id="rd-sibling" value="siblings"><label for="rd-sibling">Sibling</label>
+     <span id="node-type-panel" class="radio-panel" ng-repeat="name in nodes">
+      <input type="radio" name="node-type" ng-model="nodeTypeName" ng-click="selectNodeType(name)" id="rd-{{(name)}}" value="{{name}}"><label for="rd-{{(name)}}">{{name}}</label>
     </span>
-            <button type="button" id="btn-add-nodes">Add</button>
-            <button type="button" id="btn-delete-nodes">Delete</button>
-            <button type="button" id="btn-reset">Reset</button>
+            <button type="button" id="btn-add-nodes" ng-click="addNode()">Add</button>
+            <button type="button" id="btn-delete-nodes" ng-click="deleteNode()" ng-if="!parent">Delete</button>
+            <button type="button" id="btn-reset" ng-if="!parent" ng-click="reset()">Reset</button>
         </div>
     </div>
 
