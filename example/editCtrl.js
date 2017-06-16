@@ -69,6 +69,7 @@ app.controller('editCtrl', function($scope) {
 
     $scope.removeItem = function(){
         if($scope.node.newNodeList.length > 1) {
+            console.log($scope.node.newNodeList);
             $scope.node.newNodeList.splice(-1,1);
         }
     }
