@@ -5,8 +5,32 @@ app.directive('orgChart', function () {
             orgOptions: '=',
             onChange : '&'
         },
+
         link: function (scope, element, attrs, ngModelCtrl) {
-            $(element).orgchart(scope.orgOptions)
+            var option = {};
+
+            for(key in scope.orgOptions) {
+                option[key] = scope.orgOptions[key];
+            }
+
+            if(scope.orgOptions.draggable) {
+                option.dropCriteria = scope.orgOptions.dropCriteria ? scope.orgOptions.dropCriteria : dragbble;
+            }
+
+            function dragbble($draggedNode, $dragZone, $dropZone) {
+                if ($draggedNode.find('.content').text().indexOf('manager') > -1 && $dropZone.find('.content').text().indexOf('engineer') > -1) {
+                    return false;
+                }
+                return true;
+            }
+                (element).orgchart(option)
+                 .children('.orgchart').on('nodedropped.orgchart', function (event) {
+                    console.log('draggedNode:' + event.draggedNode.children('.title').text(), event.draggedNode.attr('id')
+                    + ', dragZone:' + event.dragZone.children('.title').text(), event.dragZone.attr('id')
+                    + ', dropZone:' + event.dropZone.children('.title').text(), event.dropZone.attr('id'));
+                    var tree = $(element).orgchart('getHierarchy');
+                    scope.onChange({hierarchy : tree});
+                })
                 .on('click', '.node', function() {
                     var $this = $(this);
                     $('#selected-node').val($this.find('.title').text()).data('node', $this);
