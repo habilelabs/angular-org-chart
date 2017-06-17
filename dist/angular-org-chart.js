@@ -23,8 +23,8 @@ app.directive('orgChart', function () {
                 }
                 return true;
             }
-                (element).orgchart(option)
-                 .children('.orgchart').on('nodedropped.orgchart', function (event) {
+            $(element).orgchart(option)
+                .children('.orgchart').on('nodedropped.orgchart', function (event) {
                     console.log('draggedNode:' + event.draggedNode.children('.title').text(), event.draggedNode.attr('id')
                     + ', dragZone:' + event.dragZone.children('.title').text(), event.dragZone.attr('id')
                     + ', dropZone:' + event.dropZone.children('.title').text(), event.dropZone.attr('id'));
