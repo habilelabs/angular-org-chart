@@ -8,13 +8,13 @@
 
 <div ng-app="hlOrgChart">
     <div ng-controller="editCtrl">
-        <org-chart org-options="orgOptions" on-change="dropped(hierarchy)" on-edit="onEdit" node="node"></org-chart>
-        <div id="edit-panel">
+        <org-chart org-options="orgOptions" on-change="dropped(hierarchy)" on-node-click="currentNode" node="node"></org-chart>
+
+        <!--<div id="edit-panel">
             <label class="selected-node-group" ng-if="!parent">selected node:</label>
             <input type="text" ng-model="node.name" id="selected-node" class="selected-node-group" ng-if="!parent">
             <label>new node:</label>
             <ul id="new-nodelist">
-                <!--<li><input type="text" class="new-node"></li>-->
                 <li ng-repeat="nd in node.newNodeList"><input type="text" ng-model="nd.name" class="new-node"></li>
 
             </ul>
@@ -26,7 +26,7 @@
             <button type="button" id="btn-add-nodes" ng-click="addNode()">Add</button>
             <button type="button" id="btn-delete-nodes" ng-click="deleteNode()" ng-if="!parent">Delete</button>
             <button type="button" id="btn-reset" ng-if="!parent" ng-click="reset()">Reset</button>
-        </div>
+        </div>-->
     </div>
 
 </div>

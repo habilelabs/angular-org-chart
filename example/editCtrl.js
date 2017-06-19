@@ -41,6 +41,10 @@ app.controller('editCtrl', function($scope) {
         }
     }
 
+    $scope.currentNode = function(data) {
+        console.log("====>>>>", data);
+    }
+
     // On Dropped
     $scope.dropped = function(hierarchy) {
         console.log('updated hierarchy', hierarchy);
