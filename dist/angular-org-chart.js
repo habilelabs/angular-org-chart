@@ -3,22 +3,46 @@ app.directive('orgChart', function () {
         restrict: 'AE',
         scope: {
             orgOptions: '=',
-            onChange : '&'
+            onChange : '&',
+            onEdit : "=",
+            node  : "="
         },
-
         link: function (scope, element, attrs, ngModelCtrl) {
             var option = {};
 
             for(key in scope.orgOptions) {
-                option[key] = scope.orgOptions[key];
+                option[key] = angular.copy(scope.orgOptions[key]);
             }
 
             if(scope.orgOptions.draggable) {
-                option.dropCriteria = scope.orgOptions.dropCriteria ? scope.orgOptions.dropCriteria : dragbble;
+                option.dropCriteria = dragbble;
+                option.draggable = true;
             }
+            if(scope.orgOptions.isEditable) {
+                option.createNode = scope.orgOptions.createNode ? scope.orgOptions.createNode : createNode;
+            }
+            var getId = function() {
+                return (new Date().getTime()) * 1000 + Math.floor(Math.random() * 1001);
+            };
+            function createNode($node, data) {
+                $node[0].id = getId();
+                var secondMenuIcon = $('<i>', {
+                    'class': 'fa fa-info-circle second-menu-icon',
+                    click: function() {
+                        scope.onEdit(data);
+                        scope.$apply(function() {
+                            scope.node = data;
+                            scope.node.newNodeList = [{'name' : ''}];
+                        });
 
+                        $(this).siblings('.second-menu').toggle();
+                    }
+                });
+                var secondMenu = '<div class="second-menu"></div>';
+                $node.append(secondMenuIcon).append(secondMenu);
+            }
             function dragbble($draggedNode, $dragZone, $dropZone) {
-                if ($draggedNode.find('.content').text().indexOf('manager') > -1 && $dropZone.find('.content').text().indexOf('engineer') > -1) {
+                if ($draggedNode.find('.content').text().indexOf(scope.orgOptions.draggable.parent) > -1 && $dropZone.find('.content').text().indexOf(scope.orgOptions.draggable.child) > -1) {
                     return false;
                 }
                 return true;
@@ -42,6 +66,9 @@ app.directive('orgChart', function () {
                 });
         },
         controller : function() {
+            var getId = function() {
+                return (new Date().getTime()) * 1000 + Math.floor(Math.random() * 1001);
+            };
             $('input[name="chart-state"]').on('click', function() {
                 $('.orgchart').toggleClass('view-state', this.value !== 'view');
                 $('#edit-panel').toggleClass('view-state', this.value === 'view');
@@ -53,7 +80,6 @@ app.directive('orgChart', function () {
                     $('#btn-reset').trigger('click');
                 }
             });
-
             $('input[name="node-type"]').on('click', function() {
                 var $this = $(this);
                 if ($this.val() === 'parent') {
@@ -64,18 +90,18 @@ app.directive('orgChart', function () {
                 }
             });
 
-            $('#btn-add-input').on('click', function() {
+            /*$('#btn-add-input').on('click', function() {
                 $('#new-nodelist').append('<li><input type="text" class="new-node"></li>');
             });
-
-            $('#btn-remove-input').on('click', function() {
+*/
+          /*  $('#btn-remove-input').on('click', function() {
                 var inputs = $('#new-nodelist').children('li');
                 if (inputs.length > 1) {
                     inputs.last().remove();
                 }
             });
-
-            $('#btn-add-nodes').on('click', function() {
+*/
+            /*$('#btn-add-nodes').on('click', function() {
                 var $chartContainer = $('#chart-container');
                 var nodeVals = [];
                 $('#new-nodelist').find('.new-node').each(function(index, item) {
@@ -83,8 +109,8 @@ app.directive('orgChart', function () {
                     if (validVal.length) {
                         nodeVals.push(validVal);
                     }
-                });
-                var $node = $('#selected-node').data('node');
+                });*/
+     /*           var $node = $('#selected-node').data('node');
                 if (!nodeVals.length) {
                     alert('Please input value for new node');
                     return;
@@ -136,9 +162,9 @@ app.directive('orgChart', function () {
                             });
                     }
                 }
-            });
+            });*/
 
-            $('#btn-delete-nodes').on('click', function() {
+           /* $('#btn-delete-nodes').on('click', function() {
                 var $node = $('#selected-node').data('node');
                 if (!$node) {
                     alert('Please select one node in orgchart');
@@ -157,7 +183,7 @@ app.directive('orgChart', function () {
                 $('#selected-node').val('');
                 $('#new-nodelist').find('input:first').val('').parent().siblings().remove();
                 $('#node-type-panel').find('input').prop('checked', false);
-            });
+            });*/
         }
     };
 });

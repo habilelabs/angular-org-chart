@@ -8,9 +8,8 @@
 
 <div ng-app="hlOrgChart">
     <div ng-controller="editCtrl">
-        <div id="chart-container"></div>
+        <org-chart org-options="orgOptions" on-change="dropped(hierarchy)" on-edit="onEdit" node="node"></org-chart>
         <div id="edit-panel">
-
             <label class="selected-node-group" ng-if="!parent">selected node:</label>
             <input type="text" ng-model="node.name" id="selected-node" class="selected-node-group" ng-if="!parent">
             <label>new node:</label>

@@ -1,5 +1,53 @@
 app.controller('editCtrl', function($scope) {
-    $scope.nodes = ["Parent(root)","Child","Sibling"];
+    $scope.nodes = ["parent","Child","Sibling"];
+    $scope.nodes = ["parent","Child","Sibling"];
+    var data = {
+        id: 1,
+        'name': 'Lao Lao',
+        'title': 'general manager',
+        'children': [
+            { 'name': 'Bo Miao', 'title': 'department manager', id: 1.1,
+                'children': [{ 'name': 'Li Xin', 'title': 'senior engineer', id:1.11 }]
+            },
+            { 'name': 'Su Miao', 'title': 'department manager', id: 1.21,
+                'children': [
+                    { 'name': 'Tie Hua', 'title': 'senior engineer', id: 2.21 },
+                    { 'name': 'Hei Hei', 'title': 'senior engineer', id: 2.22,
+                        'children': [
+                            { 'name': 'Pang Pang', 'title': 'engineer', id: 3.11 },
+                            { 'name': 'Xiang Xiang', 'title': 'UE engineer' , id: 3.21}
+                        ]
+                    }
+                ]
+            },
+            { 'name': 'Hong Miao', 'title': 'department manager', id: 1.22 },
+            { 'name': 'Chun Miao', 'title': 'department manager', id: 1.23 }
+        ]
+    };
+    $scope.orgOptions = {
+        'data' : data,
+        'nodeContent': 'title',
+        'draggable': true,
+        'exportButton': true,
+        'exportFilename': 'MyOrgChart',
+        'pan': true,
+        'zoom': true,
+        'isEditable' : true,
+        'dropCriteria': function ($draggedNode, $dragZone, $dropZone) {
+            if ($draggedNode.find('.content').text().indexOf('manager') > -1 && $dropZone.find('.content').text().indexOf('engineer') > -1) {
+                return false;
+            }
+            return true;
+        }
+    }
+
+    // On Dropped
+    $scope.dropped = function(hierarchy) {
+        console.log('updated hierarchy', hierarchy);
+    };
+    $scope.onEdit = function(clickedNodeInfo){
+        console.log("==========clickedNodeInfo",clickedNodeInfo);
+    };
     $scope.nodeType = '';
     var datascource = {
         'name': 'Ball game',
@@ -17,30 +65,6 @@ app.controller('editCtrl', function($scope) {
         return (new Date().getTime()) * 1000 + Math.floor(Math.random() * 1001);
     };
 
-    $('#chart-container').orgchart({
-        'data' : datascource,
-        'exportButton': true,
-        'exportFilename': 'SportsChart',
-        'parentNodeSymbol': 'fa-th-large',
-        'createNode': function($node, data) {
-            $node.on('click', function (event) {
-                if (!$(event.target).is('.edge')) {
-                    $scope.node= {name:data.name};
-                    $scope.node.newNodeList = [{'name' : ''}];
-                }
-            });
-        }
-    })
-        .on('click', '.node', function() {
-            var $this = $(this);
-            $('#selected-node').val($this.find('.title').text()).data('node', $this);
-        })
-        .on('click', '.orgchart', function(event) {
-            if (!$(event.target).closest('.node').length) {
-                $scope.node = {'type' : 'view', newNodeList : [{'name' : ''}]};
-            }
-        });
-
     $scope.node = {'type' : 'view', newNodeList : [{'name' : ''}]};
     $scope.editOption = function(type) {
         if(type == 'view'){
@@ -49,7 +73,7 @@ app.controller('editCtrl', function($scope) {
     };
     $scope.selectNodeType = function (nodeType) {
         $scope.nodeType = nodeType;
-        if(nodeType == 'Parent(root)'){
+        if(nodeType == 'parent'){
             $scope.parent = true;
         }
     };
@@ -74,15 +98,16 @@ app.controller('editCtrl', function($scope) {
             alert('Please select a node type');
             return;
         }
-        if ($scope.nodeType !== 'Parent(root)' && !$('.orgchart').length) {
+        if ($scope.nodeType !== 'parent' && !$('.orgchart').length) {
             alert('Please creat the root node firstly when you want to build up the orgchart from the scratch');
             return;
         }
-        if ($scope.nodeType !== 'Parent(root)' && !$node) {
+        if ($scope.nodeType !== 'parent' && !$node) {
             alert('Please select one node in orgchart');
             return;
         }
-        if ($scope.nodeType === 'Parent(root)') {
+        if ($scope.nodeType === 'parent') {
+
             if (!$chartContainer.children().length) {// if the original chart has been deleted
                 $chartContainer.orgchart({
                     'data' : { 'name': $scope.node.newNodeList[0].name.name},
@@ -139,5 +164,6 @@ app.controller('editCtrl', function($scope) {
         //$('#new-nodelist').find('input:first').val('').parent().siblings().remove();
         $('#node-type-panel').find('input').prop('checked', false);
     };
+
 
 });
