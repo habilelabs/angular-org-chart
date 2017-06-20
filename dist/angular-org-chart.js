@@ -1,4 +1,4 @@
-app.directive('orgChart', function () {
+app.directive('orgChart',['$compile', function ($compile) {
     return {
         restrict: 'AE',
         scope: {
@@ -41,6 +41,15 @@ app.directive('orgChart', function () {
                 var secondMenu = '<div class="second-menu"></div>';
                 $node.append(secondMenuIcon).append(secondMenu);
             }
+            if(scope.orgOptions.zoom){
+                var zoomIn = ' <div class="zoomButton">'+
+                    '<button  ng-click="zoomIn()">+</button>'+
+                '<button  ng-click="zoomOut()">-</button>'+
+                '</div>';
+               var elmnt = $compile( zoomIn )( scope );
+                $("div.zoomButton" )
+                    .html(elmnt);
+            }
             function dragbble($draggedNode, $dragZone, $dropZone) {
                 if ($draggedNode.find('.content').text().indexOf(scope.orgOptions.draggable.parent) > -1 && $dropZone.find('.content').text().indexOf(scope.orgOptions.draggable.child) > -1) {
                     return false;
@@ -65,7 +74,15 @@ app.directive('orgChart', function () {
                     }
                 });
         },
-        controller : function() {
+        controller : function($scope) {
+            $scope.zoomIn = function(){
+                var e = new WheelEvent("wheel", {deltaY: -100});
+                document.getElementById('chart-container').dispatchEvent(e);
+            };
+            $scope.zoomOut = function(){
+                var e = new WheelEvent("wheel", {deltaY: 100});
+                document.getElementById('chart-container').dispatchEvent(e);
+            };
             var getId = function() {
                 return (new Date().getTime()) * 1000 + Math.floor(Math.random() * 1001);
             };
@@ -93,4 +110,4 @@ app.directive('orgChart', function () {
             });
         }
     };
-});
+}]);
