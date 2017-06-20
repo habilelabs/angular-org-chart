@@ -8,7 +8,11 @@
 
 <div ng-app="hlOrgChart">
     <div ng-controller="editCtrl">
-        <org-chart org-options="orgOptions" on-change="dropped(hierarchy)" on-node-click="currentNode" node="node"></org-chart>
+        <org-chart id="chart-container" org-options="orgOptions" on-change="dropped(hierarchy)" on-node-click="currentNode" node="node"></org-chart>
+        <div class="zoomButton">
+        <button ng-click="zoomOut()">+</button>
+        <button ng-click="zoomIn()">-</button>
+        </div>
 
         <!--<div id="edit-panel">
             <label class="selected-node-group" ng-if="!parent">selected node:</label>

@@ -49,10 +49,9 @@ app.controller('editCtrl', function($scope) {
     $scope.dropped = function(hierarchy) {
         console.log('updated hierarchy', hierarchy);
     };
-    $scope.onEdit = function(clickedNodeInfo){
-        console.log("==========clickedNodeInfo",clickedNodeInfo);
-    };
+
     $scope.nodeType = '';
+
     var datascource = {
         'name': 'Ball game',
         'children': [
@@ -70,11 +69,13 @@ app.controller('editCtrl', function($scope) {
     };
 
     $scope.node = {'type' : 'view', newNodeList : [{'name' : ''}]};
+
     $scope.editOption = function(type) {
         if(type == 'view'){
             $('#btn-reset').trigger('click');
         }
     };
+
     $scope.selectNodeType = function (nodeType) {
         $scope.nodeType = nodeType;
         if(nodeType == 'parent'){
@@ -91,6 +92,7 @@ app.controller('editCtrl', function($scope) {
             $scope.node.newNodeList.splice(-1,1);
         }
     };
+
     $scope.addNode  = function () {
         var $chartContainer = $('#chart-container');
         var $node = $('#selected-node').data('node');
@@ -107,7 +109,7 @@ app.controller('editCtrl', function($scope) {
             return;
         }
         if ($scope.nodeType !== 'parent' && !$node) {
-            alert('Please select one node in orgchart');
+            alert('Please select one node in org chart');
             return;
         }
         if ($scope.nodeType === 'parent') {
@@ -146,6 +148,7 @@ app.controller('editCtrl', function($scope) {
             }
         }
     };
+
     $scope.deleteNode  = function(){
         var $node = $('#selected-node').data('node');
         if (!$node) {
@@ -159,6 +162,7 @@ app.controller('editCtrl', function($scope) {
         $('#chart-container').orgchart('removeNodes', $node);
         $('#selected-node').val('').data('node', null);
     };
+
     $scope.reset  = function () {
         $('.orgchart').find('.focused').removeClass('focused');
         $scope.node.newNodeList = [{name : ''}];
@@ -169,5 +173,13 @@ app.controller('editCtrl', function($scope) {
         $('#node-type-panel').find('input').prop('checked', false);
     };
 
+    $scope.zoomOut = function() {
+        var e = new WheelEvent("wheel", {deltaY: 100});
+        document.getElementById('chart-container').dispatchEvent(e);
+    }
 
+    $scope.zoomIn = function() {
+        var e = new WheelEvent("wheel", {deltaY: -100});
+        document.getElementById('chart-container').dispatchEvent(e);
+    }
 });

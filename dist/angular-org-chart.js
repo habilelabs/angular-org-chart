@@ -27,7 +27,7 @@ app.directive('orgChart', function () {
             function createNode($node, data) {
                 $node[0].id = getId();
                 var secondMenuIcon = $('<i>', {
-                    'class': 'fa fa-info-circle second-menu-icon',
+                    'class': 'fa '+   +' second-menu-icon',
                     click: function() {
                         scope.onNodeClick(data);
                         scope.$apply(function() {
