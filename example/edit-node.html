@@ -4,13 +4,12 @@
 <link rel="stylesheet" href="../bower_components/orgchart/dist/css/jquery.orgchart.css" />
 <link rel="stylesheet" href="../bower_components/font-awesome/css/font-awesome.min.css" />
 <link rel="stylesheet" href="style.css">
+<link rel="stylesheet" href="../dist/angular-org-chart.css">
 <body>
 
 <div ng-app="hlOrgChart">
-    <div ng-controller="editCtrl">
+    <div ng-controller="editCtrl" class="editCtrl">
         <org-chart id="chart-container" org-options="orgOptions" on-change="dropped(hierarchy)" on-node-click="currentNode" node="node"></org-chart>
-        <div class="zoomButton">
-        </div>
 
         <!--<div id="edit-panel">
             <label class="selected-node-group" ng-if="!parent">selected node:</label>

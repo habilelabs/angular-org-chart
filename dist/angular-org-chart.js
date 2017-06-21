@@ -27,7 +27,7 @@ app.directive('orgChart',['$compile', function ($compile) {
             function createNode($node, data) {
                 $node[0].id = getId();
                 var secondMenuIcon = $('<i>', {
-                    'class': 'fa '+   +' second-menu-icon',
+                    'class': 'fa fa-info-circle second-menu-icon',
                     click: function() {
                         scope.onNodeClick(data);
                         scope.$apply(function() {
@@ -47,9 +47,10 @@ app.directive('orgChart',['$compile', function ($compile) {
                 '<button  ng-click="zoomOut()">-</button>'+
                 '</div>';
                var elmnt = $compile( zoomIn )( scope );
-                $("div.zoomButton" )
-                    .html(elmnt);
+                $("#chart-container" )
+                    .append(elmnt);
             }
+
             function dragbble($draggedNode, $dragZone, $dropZone) {
                 if ($draggedNode.find('.content').text().indexOf(scope.orgOptions.draggable.parent) > -1 && $dropZone.find('.content').text().indexOf(scope.orgOptions.draggable.child) > -1) {
                     return false;
